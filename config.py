@@ -1,4 +1,4 @@
-EPOCHS = 10
+EPOCHS = 400
 
 INPUT_SIZE = (150, 150, 1)
 

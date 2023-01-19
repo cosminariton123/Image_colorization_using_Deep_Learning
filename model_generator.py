@@ -9,28 +9,51 @@ def make_model():
 
     layer = input
 
-    for _ in range(2):
-        layer = Conv2D(32, (3, 3), activation="relu")(layer)
+
+    d1 = Conv2D(64, (3, 3), activation="relu")(layer)
+    d2 = Conv2D(64, (3, 3), activation="relu")(d1)
     
-    for _ in range(3):
-        layer = Conv2D(64, (3, 3), strides=2, activation="relu")(layer)
 
-    for _ in range(2):
-        layer = Conv2D(512, (3, 3), activation="relu")(layer)
+    d3 = Conv2D(64, (3, 3), strides=2, activation="relu")(d2)
+    d4 = Conv2D(64, (3, 3), activation="relu")(d3)
 
-    for _ in range(2):
-        layer = Conv2DTranspose(128, (3, 3), activation="relu")(layer)
+    d5 = Conv2D(128, (3, 3), strides=2, activation="relu")(d4)
+    
+    d6 = Conv2D(256, (3, 3), padding="same",activation="relu")(d5)
 
-    for _ in range(2):
-        layer = Conv2DTranspose(128, (3, 3), strides=2, activation="relu")(layer)
 
-    layer = Conv2DTranspose(64, (3, 3), strides=2, activation="relu")(layer)
+    s1 = Conv2D(350, (3, 3), padding="same",activation="relu")(d6)
+    layer = Conv2D(350, (3, 3), padding="same",activation="relu")(s1)
+    layer = layer + s1
+
+    layer = Conv2DTranspose(256, (3, 3), activation="relu")(layer)
+    layer = Conv2D(256, (3, 3), activation="relu")(layer)
+    layer = layer + d6
+
+    layer = Conv2DTranspose(128, (3, 3), activation="relu")(layer)
+    layer = Conv2D(128, (3, 3), activation="relu")(layer)
+    layer = layer + d5
+
+    layer = Conv2DTranspose(128, (3, 3), strides=2, activation="relu")(layer)
+    layer = Conv2DTranspose(64, (2, 2), activation="relu")(layer)
+    layer = layer + d4
+    
+    layer = Conv2DTranspose(64, (3, 3), activation="relu")(layer)
+    layer = layer + d3
+
+    layer = Conv2DTranspose(64, (4, 4), strides=2, activation="relu")(layer)
+    layer = layer + d2
 
     layer = Conv2DTranspose(64, (3, 3), activation="relu")(layer)
-
-    layer = Conv2DTranspose(32, (4, 4), activation="relu")(layer)
+    layer = layer + d1
     
-    layer = Conv2DTranspose(3, (3, 3), activation="sigmoid")(layer)
+    layer = Conv2DTranspose(3, (3, 3), activation="tanh")(layer)
+
+    layer = layer + input
+
+    layer = (layer + layer + abs(1 - layer)) / 2
+
+    layer = (layer + layer - abs(layer - 0)) / 2
 
     layer = layer * 255
 

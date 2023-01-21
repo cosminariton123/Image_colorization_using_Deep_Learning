@@ -5,7 +5,7 @@ from keras.models import Sequential
 
 from data_loader import TrainingGenerator
 from paths import TRAIN_SAMPLES_DIR, VALIDATION_SAMPLES_DIR
-from preprocessing import preprocess_image_training
+from preprocessing import preprocess_image_training, preprocess_image_predicting
 from save_model_info import plot_history, save_summary
 from config import TRAINING_BATCH_SIZE, EPOCHS
 
@@ -34,7 +34,7 @@ def search_for_best_model_and_save(model: Sequential , save_path):
         validation_data = TrainingGenerator(
             samples_dir=VALIDATION_SAMPLES_DIR,
             batch_size=TRAINING_BATCH_SIZE,
-            preprocessing_procedure=preprocess_image_training,
+            preprocessing_procedure=preprocess_image_predicting,
             shuffle=True
             ),
 

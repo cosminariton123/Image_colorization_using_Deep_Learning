@@ -3,6 +3,8 @@ import os
 import tensorflow as tf
 from keras.models import Sequential
 import cv2
+import numpy as np
+from tqdm import tqdm
 
 from data_loader import load_samples
 from data_loader import PredictionsGenerator
@@ -25,7 +27,7 @@ def load_model(model_path):
     
 
 def make_submission(model:Sequential, output_dir):
-    predicts = model.predict(
+    inputs = (
         PredictionsGenerator(
             samples_dir=TEST_SAMPLES_DIR,
             batch_size=PREDICTION_BATCH_SIZE,
@@ -40,8 +42,15 @@ def make_submission(model:Sequential, output_dir):
     if not os.path.exists(output_dir):
         os.mkdir(output_dir)
 
-    for id, prediction in zip(ids ,predicts):
-        cv2.imwrite(os.path.join(output_dir, id), prediction)
+    assert len(ids) == PREDICTION_BATCH_SIZE * len(inputs), f"The number of ids and the number of files should be equal.\nNumber of ids: {len(ids)}\nNumber of files: {PREDICTION_BATCH_SIZE * len(inputs)}"
+
+    id_idx = 0
+    for input in tqdm(inputs, desc="Predicting image batches", total=len(inputs)):
+        predictions = np.array(model(input, training=False))
+
+        for prediction in predictions:
+            cv2.imwrite(os.path.join(output_dir, ids[id_idx]), prediction)
+            id_idx += 1
 
 
 def load_and_make_submission(model_path):

@@ -5,6 +5,7 @@ import numpy as np
 import cv2
 
 from config import INPUT_SIZE, GROUND_THRUTH_SIZE
+from util import INPUT_SIZE_NUMPY, GROUND_TRUTH_SIZE_NUMPY
 
 
 def load_samples(samples_dir):
@@ -30,8 +31,8 @@ class TrainingGenerator(keras.utils.Sequence):
     def __getitem__(self, iteration_n):
         filepaths = self.sample_paths[self.batch_size * iteration_n : self.batch_size * (iteration_n + 1)]
         
-        samples = np.array([np.reshape(cv2.resize(cv2.imread(filepath, cv2.IMREAD_GRAYSCALE), INPUT_SIZE[:-1]), (INPUT_SIZE[1], INPUT_SIZE[0], INPUT_SIZE[2])) for filepath in filepaths])
-        ground_thruths = np.array([np.reshape(cv2.resize(cv2.imread(filepath, cv2.IMREAD_COLOR), GROUND_THRUTH_SIZE[:-1]), (GROUND_THRUTH_SIZE[1], GROUND_THRUTH_SIZE[0], GROUND_THRUTH_SIZE[2])) for filepath in filepaths])
+        samples = np.array([np.reshape(cv2.resize(cv2.imread(filepath, cv2.IMREAD_GRAYSCALE), INPUT_SIZE[:-1]), INPUT_SIZE_NUMPY) for filepath in filepaths])
+        ground_thruths = np.array([np.reshape(cv2.resize(cv2.imread(filepath, cv2.IMREAD_COLOR), GROUND_THRUTH_SIZE[:-1]), GROUND_TRUTH_SIZE_NUMPY) for filepath in filepaths])
 
         
         preprocessed_samples = list()
@@ -64,7 +65,7 @@ class PredictionsGenerator(keras.utils.Sequence):
     def __getitem__(self, iteration_n):
         filepaths = self.sample_paths[self.batch_size * iteration_n : self.batch_size * (iteration_n + 1)]
         
-        samples = np.array([np.reshape(cv2.resize(cv2.imread(filepath, cv2.IMREAD_GRAYSCALE), INPUT_SIZE[:-1]), (INPUT_SIZE[1], INPUT_SIZE[0], INPUT_SIZE[2])) for filepath in filepaths])
+        samples = np.array([np.reshape(cv2.resize(cv2.imread(filepath, cv2.IMREAD_GRAYSCALE), INPUT_SIZE[:-1]), INPUT_SIZE_NUMPY) for filepath in filepaths])
 
         preprocessed_samples = list()
         for elem_data in samples:

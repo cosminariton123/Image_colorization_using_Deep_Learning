@@ -1,11 +1,11 @@
 import tensorflow as tf
-from keras.layers import Conv2D, Conv2DTranspose, Dropout
+from keras.layers import Conv2D, Conv2DTranspose
 
 from custom_metrics import CUSTOM_METRICS
-from config import INPUT_SIZE
+from util import INPUT_SIZE_NUMPY
 
 def make_model():
-    input = tf.keras.Input(shape = INPUT_SIZE)
+    input = tf.keras.Input(shape = INPUT_SIZE_NUMPY)
 
     layer = input
 

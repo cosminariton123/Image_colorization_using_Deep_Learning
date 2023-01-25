@@ -10,7 +10,6 @@ def train_model():
     #Use this if you want to use your computer for something else
     #and performance is hindered by training
     #limit_gpu_memory_growth()
-
     model = make_model()
 
     this_model_path = os.path.join(OUTPUT_DIR, "modelCNN")

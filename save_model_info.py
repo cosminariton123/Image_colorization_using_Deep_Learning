@@ -20,6 +20,8 @@ def plot_loss(history, path_to_save):
     plt.plot(x, validation_loss, color="red", label="Validation loss")
     
     plt.title("Training and validation loss")
+    plt.xlabel("Epoch")
+    plt.ylabel("Loss")
     plt.legend()
     plt.savefig(os.path.join(path_to_save, "Loss.png"), bbox_inches="tight")
 

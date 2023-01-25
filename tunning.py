@@ -7,20 +7,38 @@ from data_loader import TrainingGenerator
 from paths import TRAIN_SAMPLES_DIR, VALIDATION_SAMPLES_DIR
 from preprocessing import preprocess_image_training, preprocess_image_predicting
 from save_model_info import plot_history, save_summary
-from config import TRAINING_BATCH_SIZE, EPOCHS
+from config import TRAINING_BATCH_SIZE, EPOCHS, EARLY_STOPPING_PATIENTE_IN_EPOCHS
 
-def search_for_best_model_and_save(model: Sequential , save_path):
-
+def generate_summary(model: Sequential):
     summary = []
     model.summary(show_trainable=True, print_fn=lambda line: summary.append(line))
     summary = "\n".join(summary)
+    
+    return summary
+
+
+def generate_callbacks(save_path):
+    callbacks = list()
+
+    callbacks.append(tf.keras.callbacks.EarlyStopping(
+        patience=EARLY_STOPPING_PATIENTE_IN_EPOCHS,
+    ))
+
+    callbacks.append(tf.keras.callbacks.ModelCheckpoint(
+                                    filepath = os.path.join(save_path ,"best_model.hdf5"),
+                                    save_only_best_model = True
+                                    ))
+
+    return callbacks
+
+
+def search_for_best_model_and_save(model: Sequential , save_path):
+
+    summary = generate_summary(model)
     save_summary(summary, save_path)
     print(summary)
 
-    callbacks = tf.keras.callbacks.ModelCheckpoint(
-                                    filepath = os.path.join(save_path ,"best_model.hdf5"),
-                                    save_only_best_model = True
-                                    )
+    callbacks = generate_callbacks(save_path)
 
     history = model.fit(
         TrainingGenerator(samples_dir=TRAIN_SAMPLES_DIR,

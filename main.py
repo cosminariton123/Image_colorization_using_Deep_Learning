@@ -13,7 +13,7 @@ def train_model():
 
     model = make_model()
 
-    this_model_path = os.path.join(OUTPUT_DIR, "modelCNN2")
+    this_model_path = os.path.join(OUTPUT_DIR, "modelCNN")
 
     if not os.path.exists(OUTPUT_DIR):
         os.mkdir(OUTPUT_DIR)
@@ -25,7 +25,7 @@ def train_model():
 def main():
     
     train_model()
-    load_and_make_submission(os.path.join(OUTPUT_DIR, "modelCNN2", "best_model.hdf5"))
+    load_and_make_submission(os.path.join(OUTPUT_DIR, "modelCNN", "best_model.hdf5"))
 
 
 if __name__ == "__main__":

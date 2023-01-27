@@ -2,7 +2,7 @@ import tensorflow as tf
 from keras.layers import Conv2D, Conv2DTranspose
 
 from custom_metrics import CUSTOM_METRICS
-from util import INPUT_SIZE_NUMPY
+from util import INPUT_SIZE_NUMPY, GROUND_TRUTH_SIZE_NUMPY
 
 def make_model():
     input = tf.keras.Input(shape = INPUT_SIZE_NUMPY)
@@ -51,9 +51,9 @@ def make_model():
 
     layer = layer + input
 
-    layer = (layer + layer + abs(1 - layer)) / 2
+    layer = tf.maximum(layer, tf.constant(0, tf.float32, GROUND_TRUTH_SIZE_NUMPY))
 
-    layer = (layer + layer - abs(layer - 0)) / 2
+    layer = tf.minimum(layer, tf.constant(1, tf.float32, GROUND_TRUTH_SIZE_NUMPY))
 
     layer = layer * 255
 

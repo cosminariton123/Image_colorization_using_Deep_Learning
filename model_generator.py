@@ -51,9 +51,9 @@ def make_model():
 
     layer = layer + input
 
-    layer = tf.maximum(layer, tf.constant(0, tf.float32, GROUND_TRUTH_SIZE_NUMPY))
+    layer = tf.maximum(layer, 0)
 
-    layer = tf.minimum(layer, tf.constant(1, tf.float32, GROUND_TRUTH_SIZE_NUMPY))
+    layer = tf.minimum(layer, 1)
 
     layer = layer * 255
 

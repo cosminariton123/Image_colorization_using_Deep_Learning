@@ -11,6 +11,9 @@ def preprocess_image_training(image, label):
 
     image = image + noise
 
+    image = tf.maximum(image, 0)
+    image = tf.minimum(image, 1)
+
     return image, label
 
 def preprocess_image_predicting(image, label):

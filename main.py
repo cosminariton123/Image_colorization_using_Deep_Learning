@@ -23,7 +23,7 @@ def train_model():
 
 def main():
     
-    train_model()
+    #train_model()
     load_and_make_submission(os.path.join(OUTPUT_DIR, "modelCNN", "best_model.hdf5"))
 
 

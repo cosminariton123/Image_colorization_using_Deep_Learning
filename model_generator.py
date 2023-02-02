@@ -64,6 +64,16 @@ def make_model():
     layer = Conv2D(128, 3, padding="same", activation="relu")(layer)
     layer = BatchNormalization()(layer)
 
+    layer = Concatenate()([input, layer])
+    layer = Conv2D(128, 1, activation="relu")(layer)
+
+    layer = Conv2D(128, 3, padding="same", activation="relu")(layer)
+    layer = BatchNormalization()(layer)
+    layer = Conv2D(128, 3, padding="same", activation="relu")(layer)
+    layer = BatchNormalization()(layer)
+    layer = Conv2D(128, 3, padding="same", activation="relu")(layer)
+    layer = BatchNormalization()(layer)
+
     layer = Conv2D(GROUND_TRUTH_SIZE_NUMPY[2], 3, padding="same", activation="tanh")(layer)
 
     layer = (layer + 1) / 2

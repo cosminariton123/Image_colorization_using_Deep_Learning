@@ -1,4 +1,5 @@
 import tensorflow as tf
+import numpy as np
 
 from config import NOISE_PERCENTAGE
 
@@ -13,7 +14,11 @@ def preprocess_image_training(image, ground_truth):
 
     image = tf.clip_by_value(image, -1, 1)
 
-    image = tf.image.random_flip_left_right(image, seed=None)
+    seed = (np.random.randint(0, 10**6, dtype=np.uint32), np.random.randint(0, 10**6, dtype=np.uint32))
+
+    image = tf.image.stateless_random_flip_left_right(image, seed=seed)
+
+    ground_truth = tf.image.stateless_random_flip_left_right(ground_truth, seed=seed)
 
     return image, ground_truth
 

@@ -59,14 +59,13 @@ def make_submission(model:Sequential, output_dir):
         if GROUND_THRUTH_SIZE[2] == 3:
             for prediction in predictions:
                 cv2.imwrite(os.path.join(output_dir, ids[id_idx]), np.array(prediction, dtype=np.uint8))
-                
+                id_idx += 1
         elif GROUND_THRUTH_SIZE[2] == 2:
             for prediction, raw_input in zip(predictions, raw_inputs_as_batch):
                 cv2.imwrite(os.path.join(output_dir, ids[id_idx]) , cv2.cvtColor(np.concatenate([np.array(raw_input, dtype=np.uint8), np.array(prediction, dtype=np.uint8)], axis=2, dtype=np.uint8), cv2.COLOR_YCrCb2BGR))
+                id_idx += 1
         else:
             raise GroundTruthSizeError(GROUND_THRUTH_SIZE)
-        
-        id_idx += 1
 
 
 def load_and_make_submission(model_path):

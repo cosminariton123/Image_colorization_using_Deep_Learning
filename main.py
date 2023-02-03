@@ -22,9 +22,8 @@ def train_model(model_name):
     search_for_best_model_and_save(model, this_model_path)
 
 def main():
-    import sys
 
-    model_name = sys.argv[1]
+    model_name = "modelCNNrgb"
 
     train_model(model_name)
     load_and_make_submission(os.path.join(OUTPUT_DIR, model_name, "best_model.hdf5"))

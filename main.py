@@ -4,6 +4,7 @@ from model_generator import make_model
 from tunning import search_for_best_model_and_save
 from submission import load_and_make_submission
 from paths import OUTPUT_DIR
+from limit_gpu_memory_growth import limit_gpu_memory_growth
     
 
 def train_model(model_name):
@@ -23,9 +24,6 @@ def train_model(model_name):
 
 def main():
 
-    import sys
-
-    #model_name = sys.argv[1]
     model_name = "modelCNN"
 
     train_model(model_name)

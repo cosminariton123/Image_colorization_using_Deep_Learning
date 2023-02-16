@@ -100,7 +100,7 @@ class PredictionsGenerator(keras.utils.Sequence):
             return images
 
         none_list = [None for _ in range(len(images))]
-        results = np.array(self.pool.starmap(self.preprocessing_procedure, zip(images, none_list)))
+        results = self.pool.starmap(self.preprocessing_procedure, zip(images, none_list))
         images = list(zip(*results))[0]
 
         images = np.array(images)

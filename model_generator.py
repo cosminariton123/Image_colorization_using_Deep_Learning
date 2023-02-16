@@ -83,6 +83,7 @@ def make_model():
     layer = BatchNormalization()(layer)
 
     layer = Conv2D(GROUND_TRUTH_SIZE_NUMPY[2], 1, activation="tanh")(layer)
+    layer = BatchNormalization()(layer)
 
     layer = (layer + 1) / 2
 
@@ -90,7 +91,7 @@ def make_model():
 
 
     optimizer = tf.keras.optimizers.Adam(
-        learning_rate=0.00001,
+        learning_rate=0.001,
         clipvalue=0.2
     )
 

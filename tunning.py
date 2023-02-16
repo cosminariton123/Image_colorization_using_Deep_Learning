@@ -59,10 +59,6 @@ def search_for_best_model_and_save(model: Sequential , save_path):
         callbacks = [callbacks],
 
         shuffle = False,
-
-        max_queue_size=30,
-        workers=12,
-        use_multiprocessing=True
     )
 
     plot_history(history, save_path)

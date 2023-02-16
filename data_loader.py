@@ -5,7 +5,7 @@ import numpy as np
 import cv2
 from multiprocessing import Pool
 
-from config import INPUT_SIZE, GROUND_TRUTH_SIZE, NR_OF_PROCESSES_PER_GENERATOR, INTERPOLATION_RESIZE
+from config import INPUT_SIZE, GROUND_TRUTH_SIZE, NR_OF_PROCESSES, INTERPOLATION_RESIZE
 from exeptions import GroundTruthSizeError
 
 
@@ -52,7 +52,7 @@ class TrainingGenerator(keras.utils.Sequence):
 
     def __getitem__(self, iteration_n):
         filepaths = self.sample_paths[self.batch_size * iteration_n : self.batch_size * (iteration_n + 1)]
-        pool = Pool(NR_OF_PROCESSES_PER_GENERATOR)
+        pool = Pool(NR_OF_PROCESSES)
         
         ground_truths = np.array(pool.map(read_bgr_channels, filepaths))
         images = np.array(pool.map(convert_to_grayscale, ground_truths))
@@ -94,7 +94,7 @@ class PredictionsGenerator(keras.utils.Sequence):
 
     def __getitem__(self, iteration_n):
         filepaths = self.sample_paths[self.batch_size * iteration_n : self.batch_size * (iteration_n + 1)]
-        pool = Pool(NR_OF_PROCESSES_PER_GENERATOR)
+        pool = Pool(NR_OF_PROCESSES)
         
         images = np.array(pool.map(read_grayscale_channel, filepaths))
 

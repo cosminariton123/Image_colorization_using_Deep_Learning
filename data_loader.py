@@ -45,19 +45,20 @@ class TrainingGenerator(keras.utils.Sequence):
         
         self.batch_size = batch_size
 
-        self.pool = Pool(NR_OF_PROCESSES_PER_GENERATOR)
+        #self.pool = Pool(NR_OF_PROCESSES_PER_GENERATOR)
 
     def __len__(self):
         return math.ceil(len(self.sample_paths) / self.batch_size)
 
     def __getitem__(self, iteration_n):
         filepaths = self.sample_paths[self.batch_size * iteration_n : self.batch_size * (iteration_n + 1)]
+        pool = Pool(NR_OF_PROCESSES_PER_GENERATOR)
         
-        ground_truths = np.array(self.pool.map(read_bgr_channels, filepaths))
-        images = np.array(self.pool.map(convert_to_grayscale, ground_truths))
+        ground_truths = np.array(pool.map(read_bgr_channels, filepaths))
+        images = np.array(pool.map(convert_to_grayscale, ground_truths))
 
         if GROUND_TRUTH_SIZE[2] == 2:
-            ground_truths = np.array(self.pool.map(convert_get_CrCb_channels, ground_truths))
+            ground_truths = np.array(pool.map(convert_get_CrCb_channels, ground_truths))
 
         if self.preprocessing_procedure is None:
             return images, ground_truths
@@ -86,21 +87,22 @@ class PredictionsGenerator(keras.utils.Sequence):
         
         self.batch_size = batch_size
 
-        self.pool = Pool(NR_OF_PROCESSES_PER_GENERATOR)
+        #self.pool = Pool(NR_OF_PROCESSES_PER_GENERATOR)
 
     def __len__(self):
         return math.ceil(len(self.sample_paths) / self.batch_size)
 
     def __getitem__(self, iteration_n):
         filepaths = self.sample_paths[self.batch_size * iteration_n : self.batch_size * (iteration_n + 1)]
+        pool = Pool(NR_OF_PROCESSES_PER_GENERATOR)
         
-        images = np.array(self.pool.map(read_grayscale_channel, filepaths))
+        images = np.array(pool.map(read_grayscale_channel, filepaths))
 
         if self.preprocessing_procedure is None:
             return images
 
         none_list = [None for _ in range(len(images))]
-        results = np.array(self.pool.starmap(self.preprocessing_procedure, zip(images, none_list)))
+        results = np.array(pool.starmap(self.preprocessing_procedure, zip(images, none_list)))
         images = list(zip(*results))[0]
 
         images = np.array(images)

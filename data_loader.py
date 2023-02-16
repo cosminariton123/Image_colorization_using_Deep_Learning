@@ -64,8 +64,9 @@ class TrainingGenerator(keras.utils.Sequence):
 
 
         results = self.pool.starmap(self.preprocessing_procedure, zip(images, ground_truths))
-        images = list(zip(*results))[0]
-        ground_truths = list(zip(*results))[1]
+        results = list(zip(*results))
+        images = results[0]
+        ground_truths = results[1]
 
         images = np.array(images)
         ground_truths = np.array(ground_truths)

@@ -23,7 +23,10 @@ def train_model(model_name):
 
 def main():
 
-    model_name = "modelCNNrgb"
+    import sys
+
+    #model_name = sys.argv[1]
+    model_name = "modelCNN"
 
     train_model(model_name)
     load_and_make_submission(os.path.join(OUTPUT_DIR, model_name, "best_model.hdf5"))

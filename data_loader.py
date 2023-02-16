@@ -5,9 +5,13 @@ import numpy as np
 import cv2
 from multiprocessing import Pool
 
-from config import INPUT_SIZE, GROUND_THRUTH_SIZE, NR_OF_PROCESSES_PER_GENERATOR
-from util import INPUT_SIZE_NUMPY, GROUND_TRUTH_SIZE_NUMPY
+from config import INPUT_SIZE, GROUND_TRUTH_SIZE, NR_OF_PROCESSES_PER_GENERATOR, INTERPOLATION_RESIZE
 from exeptions import GroundTruthSizeError
+
+
+if GROUND_TRUTH_SIZE[2] not in [2, 3]:
+    raise GroundTruthSizeError(GROUND_TRUTH_SIZE)
+
 
 
 def load_samples(samples_dir):
@@ -15,13 +19,17 @@ def load_samples(samples_dir):
 
 
 def read_grayscale_channel(filepath):
-   return np.reshape(cv2.resize(cv2.imread(filepath, cv2.IMREAD_GRAYSCALE), INPUT_SIZE[:-1]), INPUT_SIZE_NUMPY)
+   return convert_to_grayscale(cv2.resize(cv2.imread(filepath, cv2.IMREAD_COLOR), INPUT_SIZE[:-1], interpolation=INTERPOLATION_RESIZE))
 
-def read_rgb_channels(filepath):
-    return np.reshape(cv2.resize(cv2.imread(filepath, cv2.IMREAD_COLOR), GROUND_THRUTH_SIZE[:-1]), GROUND_TRUTH_SIZE_NUMPY)
+def convert_to_grayscale(image):
+    return np.reshape(cv2.cvtColor(image, cv2.COLOR_BGR2GRAY), (*image.shape[:-1], 1))
 
-def read_CrCb_channels(filepath):
-    return np.reshape(cv2.cvtColor(cv2.resize(cv2.imread(filepath, cv2.IMREAD_COLOR), GROUND_THRUTH_SIZE[:-1]), cv2.COLOR_BGR2YCrCb)[:,:,1:3], GROUND_TRUTH_SIZE_NUMPY)
+def read_bgr_channels(filepath):
+    return cv2.resize(cv2.imread(filepath, cv2.IMREAD_COLOR), GROUND_TRUTH_SIZE[:-1], interpolation=INTERPOLATION_RESIZE)
+
+def convert_get_CrCb_channels(image):
+    return cv2.cvtColor(image, cv2.COLOR_BGR2YCrCb)[:,:,1:3]
+
 
 
 class TrainingGenerator(keras.utils.Sequence):
@@ -45,28 +53,24 @@ class TrainingGenerator(keras.utils.Sequence):
     def __getitem__(self, iteration_n):
         filepaths = self.sample_paths[self.batch_size * iteration_n : self.batch_size * (iteration_n + 1)]
         
-        samples = np.array(self.pool.map(read_grayscale_channel, filepaths))
+        ground_truths = np.array(self.pool.map(read_bgr_channels, filepaths))
+        images = np.array(self.pool.map(convert_to_grayscale, ground_truths))
 
-        if GROUND_THRUTH_SIZE[2] == 3:
-            ground_thruths = np.array(self.pool.map(read_rgb_channels, filepaths))
-        elif GROUND_THRUTH_SIZE[2] == 2:
-            ground_thruths = np.array(self.pool.map(read_CrCb_channels, filepaths))
-        else:
-            raise GroundTruthSizeError(GROUND_THRUTH_SIZE)
+        if GROUND_TRUTH_SIZE[2] == 2:
+            ground_truths = np.array(self.pool.map(convert_get_CrCb_channels, ground_truths))
 
         if self.preprocessing_procedure is None:
-            return samples, ground_thruths
+            return images, ground_truths
 
-        preprocessed_samples = list()
-        preprocessed_ground_truths = list()
-        for elem_data, elem_label in zip(samples, ground_thruths):
-            preprocessed_elem_data, preprocessed_elem_label = self.preprocessing_procedure(elem_data, elem_label)
-            preprocessed_samples.append(preprocessed_elem_data)
-            preprocessed_ground_truths.append(preprocessed_elem_label)
-        preprocessed_samples = np.array(preprocessed_samples)
-        preprocessed_ground_truths = np.array(preprocessed_ground_truths)
 
-        return preprocessed_samples, preprocessed_ground_truths
+        results = self.pool.starmap(self.preprocessing_procedure, zip(images, ground_truths))
+        images = list(zip(*results))[0]
+        ground_truths = list(zip(*results))[1]
+
+        images = np.array(images)
+        ground_truths = np.array(ground_truths)
+
+        return images, ground_truths
 
     def on_epoch_end(self):
         if self.shuffle:
@@ -89,15 +93,15 @@ class PredictionsGenerator(keras.utils.Sequence):
     def __getitem__(self, iteration_n):
         filepaths = self.sample_paths[self.batch_size * iteration_n : self.batch_size * (iteration_n + 1)]
         
-        samples = np.array(self.pool.map(read_grayscale_channel, filepaths))
+        images = np.array(self.pool.map(read_grayscale_channel, filepaths))
 
         if self.preprocessing_procedure is None:
-            return samples
+            return images
 
-        preprocessed_samples = list()
-        for elem_data in samples:
-            preprocessed_elem_data, _ = self.preprocessing_procedure(elem_data, None)
-            preprocessed_samples.append(preprocessed_elem_data)
-        preprocessed_samples = np.array(preprocessed_samples)
+        none_list = [None for _ in range(len(images))]
+        results = np.array(self.pool.starmap(self.preprocessing_procedure, zip(images, none_list)))
+        images = list(zip(*results))[0]
 
-        return preprocessed_samples
+        images = np.array(images)
+
+        return images

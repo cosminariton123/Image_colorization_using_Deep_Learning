@@ -1,4 +1,4 @@
-from config import INPUT_SIZE, GROUND_THRUTH_SIZE
+from config import INPUT_SIZE, GROUND_TRUTH_SIZE
 
 def convert_from_image_to_numpy_notation(size_tuple):
     size = list(size_tuple)
@@ -10,7 +10,7 @@ def compute_input_size_numpy():
     return convert_from_image_to_numpy_notation(INPUT_SIZE)
 
 def compute_ground_truth_size_numpy():
-    return convert_from_image_to_numpy_notation(GROUND_THRUTH_SIZE)
+    return convert_from_image_to_numpy_notation(GROUND_TRUTH_SIZE)
 
 INPUT_SIZE_NUMPY = compute_input_size_numpy()
 

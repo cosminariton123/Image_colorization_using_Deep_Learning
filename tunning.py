@@ -7,7 +7,7 @@ from data_loader import TrainingGenerator
 from paths import TRAIN_SAMPLES_DIR, VALIDATION_SAMPLES_DIR
 from preprocessing import preprocess_image_training, preprocess_image_predicting
 from save_model_info import plot_history, save_summary
-from config import TRAINING_BATCH_SIZE, EPOCHS, EARLY_STOPPING_PATIENTE_IN_EPOCHS
+from config import TRAINING_BATCH_SIZE, EPOCHS, EARLY_STOPPING_PATIENTE_IN_EPOCHS, HISTOGRAM_FREQ, WRITE_GRAPHS, WRITE_IMAGES, WRITE_STEPS_PER_SECOND, PROFILE_BATCH
 
 def generate_summary(model: Sequential):
     summary = []
@@ -29,10 +29,23 @@ def generate_callbacks(save_path):
                                     save_only_best_model = True
                                     ))
 
+    log_dir = os.path.join(save_path, "logs")
+    if not os.path.exists(log_dir):
+        os.mkdir(log_dir)
+
+    callbacks.append(tf.keras.callbacks.TensorBoard(
+        log_dir = log_dir,
+        histogram_freq = HISTOGRAM_FREQ,
+        write_graph = WRITE_GRAPHS,
+        write_images = WRITE_IMAGES,
+        write_steps_per_second = WRITE_STEPS_PER_SECOND,
+        profile_batch = PROFILE_BATCH
+    ))
+
     return callbacks
 
 
-def search_for_best_model_and_save(model: Sequential , save_path):
+def train_model_and_save(model: Sequential , save_path):
 
     summary = generate_summary(model)
     save_summary(summary, save_path)

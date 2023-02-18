@@ -24,7 +24,7 @@ def compile_custom_objects():
 
 
 def load_model(model_path):
-    return tf.keras.models.load_model(model_path, custom_objects=compile_custom_objects())
+    return tf.keras.models.load_model(os.path.join(model_path, "best_model.hdf5"), custom_objects=compile_custom_objects())
     
 
 def make_submission(model:Sequential, output_dir):
@@ -70,7 +70,7 @@ def make_submission(model:Sequential, output_dir):
 
 def load_and_make_submission(model_path):
     model = load_model(model_path)
-    make_submission(model, os.path.join(os.path.dirname(model_path), "Image Predictions"))
+    make_submission(model, os.path.join(model_path, "Image Predictions"))
 
     
       

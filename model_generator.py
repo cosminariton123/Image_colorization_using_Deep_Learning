@@ -83,8 +83,7 @@ def make_model():
     layer = Conv2D(64, 1, activation="relu")(layer)
     layer = BatchNormalization()(layer)
 
-    layer = Conv2D(GROUND_TRUTH_SIZE_NUMPY[2], 1, activation="tanh")(layer)
-    layer = BatchNormalization(dtype = tf.float32)(layer)
+    layer = Conv2D(GROUND_TRUTH_SIZE_NUMPY[2], 1, activation="tanh", dtype = tf.float32)(layer)
 
     layer = (layer + 1) / 2
 
@@ -94,7 +93,6 @@ def make_model():
     optimizer = tf.keras.optimizers.SGD(
         learning_rate=0.00000001,
         momentum=0.85
-        #clipvalue=0.2
     )
     optimizer = tf.keras.mixed_precision.LossScaleOptimizer(optimizer, dynamic = True)
 

@@ -8,7 +8,6 @@ from tqdm import tqdm
 
 from data_loader import load_samples
 from data_loader import PredictionsGenerator
-from paths import TEST_SAMPLES_DIR
 from preprocessing import preprocess_image_predicting
 from custom_metrics import CUSTOM_METRICS
 from config import PREDICTION_BATCH_SIZE, GROUND_TRUTH_SIZE
@@ -24,13 +23,13 @@ def compile_custom_objects():
 
 
 def load_model(model_path):
-    return tf.keras.models.load_model(os.path.join(model_path, "best_model.hdf5"), custom_objects=compile_custom_objects())
+    return tf.keras.models.load_model(model_path, custom_objects=compile_custom_objects())
     
 
-def make_submission(model:Sequential, output_dir):
+def make_prediction(model:Sequential, input_dir, output_dir):
     inputs_as_batches = (
         PredictionsGenerator(
-            samples_dir=TEST_SAMPLES_DIR,
+            samples_dir=input_dir,
             batch_size=PREDICTION_BATCH_SIZE,
             preprocessing_procedure=preprocess_image_predicting,
         )
@@ -39,13 +38,13 @@ def make_submission(model:Sequential, output_dir):
 
     raw_inputs_as_batches = (
         PredictionsGenerator(
-            samples_dir=TEST_SAMPLES_DIR,
+            samples_dir=input_dir,
             batch_size=PREDICTION_BATCH_SIZE,
         )
     )
 
 
-    ids = load_samples(TEST_SAMPLES_DIR)
+    ids = load_samples(input_dir)
     ids = [os.path.basename(elem) for elem in ids]
 
     if not os.path.exists(output_dir):
@@ -68,9 +67,11 @@ def make_submission(model:Sequential, output_dir):
             raise GroundTruthSizeError(GROUND_TRUTH_SIZE)
 
 
-def load_and_make_submission(model_path):
+def load_and_make_prediction(model_path, input_dir):
+    model_dir = os.path.dirname(os.path.dirname(model_path))
+
     model = load_model(model_path)
-    make_submission(model, os.path.join(model_path, "Image Predictions"))
+    make_prediction(model, input_dir, os.path.join(model_dir, "Image Predictions"))
 
     
       

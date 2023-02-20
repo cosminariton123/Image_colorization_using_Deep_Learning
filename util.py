@@ -49,10 +49,17 @@ def remove_old_best_models(epoch, model_saves_dir):
     files = get_all_best_saved_models_from_dir(model_saves_dir)
 
     for file in files:
-        if get_saved_model_epoch_as_int_from_filename(file) != epoch:
+        if get_saved_model_epoch_as_int_from_filename(file) > epoch:
             filepath = os.path.join(model_saves_dir, file)
             os.remove(filepath)
             print(f"Epoch {epoch} deleting old best model {filepath}")
+
+    if len(files) > 1:
+        for file in files:
+            if get_saved_model_epoch_as_int_from_filename(file) != epoch:
+                filepath = os.path.join(model_saves_dir, file)
+                os.remove(filepath)
+                print(f"Epoch {epoch} deleting old best model {filepath}")
 
 
 INPUT_SIZE_NUMPY = compute_input_size_numpy()

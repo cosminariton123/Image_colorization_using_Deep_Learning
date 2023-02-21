@@ -11,7 +11,7 @@ from util import get_saved_model_epoch_as_int_from_filename
 
 
 def train_model_from_scratch(model_name):
-    model = make_model()
+    model = make_model(model_name)
 
     save_path = os.path.join(OUTPUT_DIR, model_name)
 
@@ -55,9 +55,9 @@ def main():
 
     model_name = "modelCNN"
 
-    train_model_from_scratch(model_name)
-    #load_and_train_model(os.path.join(OUTPUT_DIR, model_name, "model_saves", "model_epoch_5.hdf5"))
-    #load_and_make_prediction(os.path.join(OUTPUT_DIR, model_name, "model_saves", "best_model.hdf5"), VALIDATION_SAMPLES_DIR)
+    #train_model_from_scratch(model_name)
+    #load_and_train_model(os.path.join(OUTPUT_DIR, model_name, "model_saves", "model_epoch_7.hdf5"))
+    #load_and_make_prediction(os.path.join(OUTPUT_DIR, model_name, "model_saves", "best_model_epoch_10.hdf5"), VALIDATION_SAMPLES_DIR)
 
 
 if __name__ == "__main__":

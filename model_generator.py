@@ -4,7 +4,7 @@ from keras.layers import Conv2D, Conv2DTranspose, BatchNormalization, Concatenat
 from custom_metrics import CUSTOM_METRICS
 from util import INPUT_SIZE_NUMPY, GROUND_TRUTH_SIZE_NUMPY
 
-def make_model():
+def make_model(model_name):
 
     input = tf.keras.Input(shape = INPUT_SIZE_NUMPY)
 
@@ -135,12 +135,13 @@ def make_model():
 
 
     optimizer = tf.keras.optimizers.SGD(
-        learning_rate=0.00001,
-        momentum=0.85
+        learning_rate=0.000001,
+        momentum=0.85,
+        decay = 0.00001
     )
     optimizer = tf.keras.mixed_precision.LossScaleOptimizer(optimizer, dynamic = True)
 
-    model = tf.keras.Model(inputs = input, outputs = layer)
+    model = tf.keras.Model(inputs = input, outputs = layer, name = model_name)
     model.compile(loss="mse", optimizer=optimizer, metrics=CUSTOM_METRICS)
 
     return model

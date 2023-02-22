@@ -1,7 +1,7 @@
 import os
 
 import tensorflow as tf
-from keras.models import Sequential
+from keras.models import Model
 
 from data_loader import TrainingGenerator
 from paths import TRAIN_SAMPLES_DIR, VALIDATION_SAMPLES_DIR
@@ -14,7 +14,7 @@ from config import REDUCE_LR_COOLDOWN, REDUCE_LR_PATIENCE, REDUCE_LR_MIN_DELTA, 
 from config import HISTOGRAM_FREQ, WRITE_GRAPHS, WRITE_IMAGES, WRITE_STEPS_PER_SECOND, PROFILE_BATCH
 from config import SAVE_LAST_X_EPOCHS
 
-def generate_summary(model: Sequential):
+def generate_summary(model: Model):
     summary = []
     model.summary(print_fn=lambda line: summary.append(line))
     summary = "\n".join(summary)
@@ -84,7 +84,7 @@ def generate_callbacks(save_path):
     return callbacks
 
 
-def train_model_and_save(model: Sequential , save_path, initial_epoch=0):
+def train_model_and_save(model: Model , save_path, initial_epoch=0):
 
     summary = generate_summary(model)
     save_summary(summary, save_path)

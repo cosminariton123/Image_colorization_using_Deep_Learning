@@ -53,11 +53,11 @@ def main():
     #Same, but for TPUs:
     #mixed_precision.set_global_policy("mixed_bfloat16")
 
-    model_name = "modelCNN"
+    model_name = "modelCNNexp"
 
-    #train_model_from_scratch(model_name)
-    #load_and_train_model(os.path.join(OUTPUT_DIR, model_name, "model_saves", "model_epoch_7.hdf5"))
-    #load_and_make_prediction(os.path.join(OUTPUT_DIR, model_name, "model_saves", "best_model_epoch_10.hdf5"), VALIDATION_SAMPLES_DIR)
+    train_model_from_scratch(model_name)
+    #load_and_train_model(os.path.join(OUTPUT_DIR, model_name, "model_saves", "model_epoch_11.hdf5"))
+    #load_and_make_prediction(os.path.join(OUTPUT_DIR, model_name, "model_saves", "best_model_epoch_1.hdf5"), VALIDATION_SAMPLES_DIR)
 
 
 if __name__ == "__main__":

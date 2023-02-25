@@ -77,6 +77,8 @@ def make_model(model_name):
     )
     optimizer = tf.keras.mixed_precision.LossScaleOptimizer(optimizer, dynamic = True)
 
+    layer = Conv2D(GROUND_TRUTH_SIZE_NUMPY[2], 3, activation="tanh", dtype=tf.float32, padding="same")(input)
+
     model = tf.keras.Model(inputs = input, outputs = layer, name = model_name)
     model.compile(loss="mse", optimizer=optimizer, metrics=CUSTOM_METRICS)
 

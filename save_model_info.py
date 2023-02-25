@@ -1,10 +1,26 @@
 import matplotlib.pyplot as plt
 import os
 
+from keras.models import Model
+
+
+def generate_summary(model: Model):
+    summary = []
+    model.summary(print_fn=lambda line: summary.append(line))
+    summary = "\n".join(summary)
+    
+    return summary
+
 
 def save_summary(string, save_path):
     with open(os.path.join(save_path, "Summary.txt"), "w") as f:
         f.write(string)
+
+
+def generate_print_and_save_summary(model: Model, save_path):
+    summary = generate_summary(model)
+    print(summary)
+    save_summary(summary, save_path)
 
 
 def plot_loss(history, path_to_save):

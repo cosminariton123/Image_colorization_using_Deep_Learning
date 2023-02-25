@@ -16,6 +16,29 @@ def compute_ground_truth_size_numpy():
     return convert_from_image_to_numpy_notation(GROUND_TRUTH_SIZE)
 
 
+def generate_log_dir_of_not_exists(save_path):
+    log_dir = os.path.join(save_path, "logs")
+    if not os.path.exists(log_dir):
+        os.mkdir(log_dir)
+    return log_dir
+
+
+def log_image_samples_at_the_start_of_training(log_dir, training_data_generator, validation_data_generator):
+    import matplotlib.pyplot as plt
+    import cv2
+    for i in range(10):                 #batch black/color #image_in_batch
+        cv2.imshow("coco", training_data_generator[0][1][i])
+        cv2.waitKey()
+        cv2.destroyAllWindows()
+        plt.show()
+
+    exit()
+ 
+    file_writer = tf.summary.create_file_writer(log_dir)
+    with file_writer.as_default():
+        tf.summary.image("Training data samples", img, step=0)
+
+
 def get_saved_model_epoch_as_int_from_filename(filename):
     return int(filename.split("_")[-1].split(".")[0])
 

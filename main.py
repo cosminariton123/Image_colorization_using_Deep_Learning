@@ -1,12 +1,15 @@
 import os
 import shutil
+
 from keras import mixed_precision
+from limit_gpu_memory_growth import limit_gpu_memory_growth
 
 from model_generator import make_model
 from tunning import train_model_and_save
 from prediction import load_and_make_prediction, load_model
+
 from paths import OUTPUT_DIR, TEST_SAMPLES_DIR, VALIDATION_SAMPLES_DIR
-from limit_gpu_memory_growth import limit_gpu_memory_growth
+
 from util import get_saved_model_epoch_as_int_from_filename
 
 
@@ -53,10 +56,10 @@ def main():
     #Same, but for TPUs:
     #mixed_precision.set_global_policy("mixed_bfloat16")
 
-    model_name = "modelCNNexp"
+    model_name = "modelCNNrgbexp"
 
     train_model_from_scratch(model_name)
-    #load_and_train_model(os.path.join(OUTPUT_DIR, model_name, "model_saves", "model_epoch_11.hdf5"))
+    #load_and_train_model(os.path.join(OUTPUT_DIR, model_name, "model_saves", "model_epoch_20.hdf5"))
     #load_and_make_prediction(os.path.join(OUTPUT_DIR, model_name, "model_saves", "best_model_epoch_1.hdf5"), VALIDATION_SAMPLES_DIR)
 
 

@@ -1,14 +1,15 @@
 import os
-
-import tensorflow as tf
-from keras.models import Sequential
 import cv2
 import numpy as np
 from tqdm import tqdm
 
+import tensorflow as tf
+from keras.models import Sequential
+
 from data_loader import load_samples
 from data_loader import PredictionsGenerator
 from preprocessing import preprocess_image_predicting
+
 from custom_metrics import CUSTOM_METRICS
 from config import PREDICTION_BATCH_SIZE, GROUND_TRUTH_SIZE
 from exeptions import GroundTruthSizeError

@@ -42,7 +42,7 @@ def load_and_train_model(model_path):
     model = load_model(model_path)
     train_model_and_save(model, save_path, initial_epoch)
     
-
+    
 
 def main():
     #Use this if you want to use your computer for something else
@@ -56,7 +56,7 @@ def main():
     #Same, but for TPUs:
     #mixed_precision.set_global_policy("mixed_bfloat16")
 
-    model_name = "modelCNNrgbexp"
+    model_name = "modelCNNAsaSaFie"
 
     train_model_from_scratch(model_name)
     #load_and_train_model(os.path.join(OUTPUT_DIR, model_name, "model_saves", "model_epoch_20.hdf5"))

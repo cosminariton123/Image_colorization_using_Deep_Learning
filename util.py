@@ -23,22 +23,6 @@ def generate_log_dir_of_not_exists(save_path):
     return log_dir
 
 
-def log_image_samples_at_the_start_of_training(log_dir, training_data_generator, validation_data_generator):
-    import matplotlib.pyplot as plt
-    import cv2
-    for i in range(10):                 #batch black/color #image_in_batch
-        cv2.imshow("coco", training_data_generator[0][1][i])
-        cv2.waitKey()
-        cv2.destroyAllWindows()
-        plt.show()
-
-    exit()
- 
-    file_writer = tf.summary.create_file_writer(log_dir)
-    with file_writer.as_default():
-        tf.summary.image("Training data samples", img, step=0)
-
-
 def get_saved_model_epoch_as_int_from_filename(filename):
     return int(filename.split("_")[-1].split(".")[0])
 

@@ -16,14 +16,14 @@ def train_model_and_save(model: Model , save_path, initial_epoch=0):
     training_data_generator = TrainingGenerator(samples_dir=TRAIN_SAMPLES_DIR,
         batch_size=TRAINING_BATCH_SIZE,
         preprocessing_procedure=preprocess_image_training,
-        shuffle=False
+        shuffle=True
     )
     
     validation_data_generator = TrainingGenerator(
             samples_dir=VALIDATION_SAMPLES_DIR,
             batch_size=TRAINING_BATCH_SIZE,
             preprocessing_procedure=preprocess_image_predicting,
-            shuffle=False
+            shuffle=True
     )
 
     log_dir = generate_log_dir_of_not_exists(save_path)

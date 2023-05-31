@@ -16,21 +16,19 @@ def train_model_and_save(model: Model , save_path, initial_epoch=0):
     training_data_generator = TrainingGenerator(samples_dir=TRAIN_SAMPLES_DIR,
         batch_size=TRAINING_BATCH_SIZE,
         preprocessing_procedure=preprocess_image_training,
-        shuffle=True
+        shuffle=False
     )
     
     validation_data_generator = TrainingGenerator(
             samples_dir=VALIDATION_SAMPLES_DIR,
             batch_size=TRAINING_BATCH_SIZE,
             preprocessing_procedure=preprocess_image_predicting,
-            shuffle=True
+            shuffle=False
     )
 
     log_dir = generate_log_dir_of_not_exists(save_path)
     generate_print_and_log_summary(model, log_dir)
     log_image_samples_at_the_start_of_training(log_dir, initial_epoch, training_data_generator, validation_data_generator)
-    exit()
-
 
     model.fit(
         training_data_generator,

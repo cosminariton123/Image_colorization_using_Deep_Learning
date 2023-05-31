@@ -1,10 +1,13 @@
 import math
 import numpy as np
+import cv2
 
 import tensorflow as tf
 from keras.models import Model
 
-from config import TRAINING_IMAGE_DIFFERENT_SAMPLES_TO_LOG, TRAINING_IMAGE_SAME_SAMPLE_TO_LOG, VALIDATION_IMAGE_SAMPLES_TO_LOG
+from config import TRAINING_IMAGE_DIFFERENT_SAMPLES_TO_LOG, TRAINING_IMAGE_SAME_SAMPLE_TO_LOG, VALIDATION_IMAGE_SAMPLES_TO_LOG, GROUND_TRUTH_SIZE
+
+from preprocessing import unnormalize_pixel_values
 
 
 def generate_summary(model: Model):
@@ -53,8 +56,8 @@ def log_image_samples_at_the_start_of_training(log_dir, initial_epoch, training_
                 training_ground_truth_images_to_log.append(batch[1][i])
 
 
-    training_input_images_to_log = np.array((np.array(training_input_images_to_log) + 1) / 2 * 255, dtype=np.uint8)
-    training_ground_truth_images_to_log = np.array(training_ground_truth_images_to_log, dtype=np.uint8)
+    training_input_images_to_log = np.array(unnormalize_pixel_values(np.array(training_input_images_to_log)), dtype=np.uint8)
+    training_ground_truth_images_to_log = np.array(unnormalize_pixel_values(np.array(training_ground_truth_images_to_log)), dtype=np.uint8)
 
     validation_input_images_to_log = list()
     validation_ground_truth_images_to_log = list()
@@ -69,10 +72,17 @@ def log_image_samples_at_the_start_of_training(log_dir, initial_epoch, training_
             validation_input_images_to_log.append(batch[0][i])
             validation_ground_truth_images_to_log.append(batch[1][i])
 
-    validation_input_images_to_log = np.array((np.array(validation_input_images_to_log) + 1) / 2 * 255, dtype=np.uint8)
-    validation_ground_truth_images_to_log = np.array(validation_ground_truth_images_to_log, dtype=np.uint8)
+    validation_input_images_to_log = np.array(unnormalize_pixel_values(np.array(validation_input_images_to_log)), dtype=np.uint8)
+    validation_ground_truth_images_to_log = np.array(unnormalize_pixel_values(np.array(validation_ground_truth_images_to_log)), dtype=np.uint8)
 
- 
+
+    if GROUND_TRUTH_SIZE[2] == 2:
+        training_ground_truth_images_to_log = np.array([cv2.cvtColor(np.concatenate([input, ground_truth], axis=2, dtype=np.uint8), cv2.COLOR_YCrCb2RGB) for input, ground_truth in zip(training_input_images_to_log, training_ground_truth_images_to_log)])
+        validation_ground_truth_images_to_log = np.array([cv2.cvtColor(np.concatenate([input, ground_truth], axis=2, dtype=np.uint8), cv2.COLOR_YCrCb2RGB) for input, ground_truth in zip(validation_input_images_to_log, validation_ground_truth_images_to_log)])
+    else:
+        training_ground_truth_images_to_log = np.array([cv2.cvtColor(image, cv2.COLOR_BGR2RGB) for image in training_ground_truth_images_to_log])
+        validation_ground_truth_images_to_log = np.array([cv2.cvtColor(image, cv2.COLOR_BGR2RGB) for image in validation_ground_truth_images_to_log])
+
     file_writer = tf.summary.create_file_writer(log_dir)
     with file_writer.as_default():
         tf.summary.image("Training input data samples", training_input_images_to_log, step=initial_epoch, max_outputs=TRAINING_IMAGE_DIFFERENT_SAMPLES_TO_LOG * TRAINING_IMAGE_SAME_SAMPLE_TO_LOG)

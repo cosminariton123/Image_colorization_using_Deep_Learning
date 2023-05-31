@@ -56,8 +56,8 @@ class TrainingGenerator(keras.utils.Sequence):
         ground_truths = np.array(self.pool.map(read_bgr_channels, filepaths))
         images = np.array(self.pool.map(convert_to_grayscale, ground_truths))
 
-        #if GROUND_TRUTH_SIZE[2] == 2:
-        #    ground_truths = np.array(self.pool.map(convert_get_CrCb_channels, ground_truths))
+        if GROUND_TRUTH_SIZE[2] == 2:
+            ground_truths = np.array(self.pool.map(convert_get_CrCb_channels, ground_truths))
 
         if self.preprocessing_procedure is None:
             return images, ground_truths

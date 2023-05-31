@@ -43,6 +43,10 @@ def normalize_pixel_values(image):
     return image / 255 * 2 - 1
 
 
+def unnormalize_pixel_values(image):
+    return (image + 1) / 2 * 255
+
+
 def preprocess_image_training(image, ground_truth):
     image_shape = image.shape
     ground_truth_shape = ground_truth.shape
@@ -53,6 +57,7 @@ def preprocess_image_training(image, ground_truth):
     image, ground_truth = random_flip_left_right(image, ground_truth)
     image, ground_truth = random_rotate(image, ground_truth)
     image = normalize_pixel_values(image)
+    ground_truth = normalize_pixel_values(ground_truth)
 
     image = np.reshape(image, image_shape)
     ground_truth = np.reshape(ground_truth, ground_truth_shape)
@@ -65,5 +70,7 @@ def preprocess_image_predicting(image, ground_truth):
     image = np.array(image, dtype=np.float32)
 
     image = normalize_pixel_values(image)
+    if ground_truth is not None:
+        ground_truth = normalize_pixel_values(ground_truth)
 
     return image, ground_truth

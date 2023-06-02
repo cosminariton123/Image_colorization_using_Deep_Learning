@@ -11,24 +11,68 @@ def make_model(model_name):
     layer = input
 
     #All filters and units should be multiple of 8(even better 128 for TPUs) for efficiency
-    for _ in range(2):
-        layer = Conv2D(16, (3, 3), activation="relu")(layer)
+    layer = Conv2D(64, 3, activation="relu", padding="same")(layer)
+    d1 = Conv2D(64, 3, activation="relu", padding="same")(layer)
 
-    for _ in range(2):
-        layer = Conv2D(32, (3, 3), activation="relu")(layer)
+    layer = MaxPool2D()(d1)
 
-    for _ in range(2):
-        layer = Conv2D(128, (3, 3), activation="relu")(layer)
+    layer = Conv2D(128, 3, activation="relu", padding="same")(layer)
+    d2 = Conv2D(128, 3, activation="relu", padding="same")(layer)
 
-    for _ in range(2):
-        layer = Conv2DTranspose(64, (3, 3), activation="relu")(layer)
+    layer = MaxPool2D()(d2)
 
-    for _ in range(2):
-        layer = Conv2DTranspose(32, (3, 3), activation="relu")(layer)
+    layer = Conv2D(256, 3, activation="relu", padding="same")(layer)
+    d3 = Conv2D(256, 3, activation="relu", padding="same")(layer)
 
-    layer = Conv2DTranspose(16, (3, 3), activation="relu")(layer)
+    layer = MaxPool2D()(d3)
 
-    layer = Conv2DTranspose(GROUND_TRUTH_SIZE_NUMPY[2], 3, padding="same", activation="tanh", dtype = tf.float32)(layer)
+    layer = Conv2D(512, 3, activation="relu", padding="same")(layer)
+    d4 = Conv2D(512, 3, activation="relu", padding="same")(layer)
+
+    layer = MaxPool2D()(d4)
+
+    layer = Conv2D(1024, 3, activation="relu", padding="same")(layer)
+    layer = Conv2D(1024, 3, activation="relu", padding="same")(layer)
+
+    layer = Conv2DTranspose(512, 2, strides=2, activation="relu")(layer)
+
+    layer = Concatenate()([layer, d4])
+    layer = Conv2D(512, 1, activation="relu")(layer)
+
+    layer = Conv2D(512, 3, activation="relu", padding="same")(layer)
+    layer = Conv2D(512, 3, activation="relu", padding="same")(layer)
+
+    layer = Conv2DTranspose(256, 3, strides=2, activation="relu")(layer)
+    
+
+    layer = Concatenate()([layer, d3])
+    layer = Conv2D(256, 1, activation="relu")(layer)
+
+    layer = Conv2D(256, 3, activation="relu", padding="same")(layer)
+    layer = Conv2D(256, 3, activation="relu", padding="same")(layer)
+
+    
+    layer = Conv2DTranspose(128, 3, strides=2, activation="relu")(layer)
+
+    
+    layer = Concatenate()([layer, d2])
+    layer = Conv2D(128, 1, activation="relu")(layer)
+
+    layer = Conv2D(128, 3, activation="relu", padding="same")(layer)
+    layer = Conv2D(128, 3, activation="relu", padding="same")(layer)
+
+
+    layer = Conv2DTranspose(64, 2, strides=2, activation="relu")(layer)
+
+    
+    layer = Concatenate()([layer, d1])
+    layer = Conv2D(64, 1, activation="relu")(layer)
+
+    layer = Conv2D(64, 3, activation="relu", padding="same")(layer)
+    layer = Conv2D(64, 3, activation="relu", padding="same")(layer)
+
+
+    layer = Conv2D(GROUND_TRUTH_SIZE_NUMPY[2], 3, activation="tanh", dtype = tf.float32, padding="same")(layer)
 
 
     optimizer = tf.keras.optimizers.Adam()
@@ -39,3 +83,4 @@ def make_model(model_name):
     model.compile(loss="mse", optimizer=optimizer, metrics=CUSTOM_METRICS)
 
     return model
+    

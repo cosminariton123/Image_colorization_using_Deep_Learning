@@ -10,14 +10,14 @@ from data_loader import load_samples
 from data_loader import PredictionsGenerator
 from preprocessing import preprocess_image_predicting, unnormalize_pixel_values
 
-from custom_metrics import CUSTOM_METRICS
+from custom_metrics import CUSTOM_OBJECTS
 from config import PREDICTION_BATCH_SIZE, GROUND_TRUTH_SIZE
 from exeptions import GroundTruthSizeError
 
 def compile_custom_objects():
     custom_objects = dict()
 
-    for custom_metric in CUSTOM_METRICS:
+    for custom_metric in CUSTOM_OBJECTS:
         custom_objects[custom_metric.__name__] = custom_metric
     
     return custom_objects

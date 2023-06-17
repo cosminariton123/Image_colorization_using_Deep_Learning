@@ -9,3 +9,7 @@ class NoiseDeviationValueError(ValueError):
 class NoisePercentageValueError(ValueError):
     def __init__(self, NOISE_PERCENTAGE) -> None:
         super().__init__(f"NOISE_PERCENTAGE should be in interval [0, 1]. Found {NOISE_PERCENTAGE}")
+
+class BrightnessAugmentationError(ValueError):
+    def __init__(self, MAX_BRIGHTNESS_AUGM_COEFICIENT) -> None:
+        super().__init__(f"MAX_BRIGHTNESS_AUGM_COEFICIENT should be in interval [0, 1]. Found {MAX_BRIGHTNESS_AUGM_COEFICIENT}")

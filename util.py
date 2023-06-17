@@ -1,7 +1,54 @@
 import os
 import re
 
-from config import INPUT_SIZE, GROUND_TRUTH_SIZE
+from config import INPUT_SIZE, GROUND_TRUTH_SIZE, INTERPOLATION_ROTATE
+
+from PIL import Image
+import math
+import numpy as np
+
+def max_crop_dimensions(height, width, degree):
+
+    sin_angle = abs(math.sin(degree))
+    cos_angle = abs(math.cos(degree))
+
+    if height < width:
+        L = width
+        l = height
+    else:
+        L = height
+        l = width
+
+    if l <= L * 2 * sin_angle * cos_angle:
+        if height < width:
+            height = (l / 2) / cos_angle
+            width = (l / 2) / sin_angle
+        else:
+            height = (l / 2) / sin_angle
+            width = (l / 2) / cos_angle
+    else:
+        aux_width = width
+        width = (width * cos_angle - height * sin_angle) / (cos_angle * cos_angle - sin_angle * sin_angle)
+        height = (height * cos_angle - aux_width * sin_angle) / (cos_angle * cos_angle - sin_angle * sin_angle)
+        
+    return height, width
+
+
+
+
+def rotate_and_crop(image, degrees):
+    
+    optimum_height, optimum_width = max_crop_dimensions(image.shape[0], image.shape[1], math.radians(degrees))
+
+    image_rotated = np.array(Image.fromarray(image).rotate(-degrees, expand=True, resample=INTERPOLATION_ROTATE))
+    
+    height, width = image_rotated.shape[0], image_rotated.shape[1]
+
+    return image_rotated[int((height - optimum_height) / 2):int((height - optimum_height) / 2 + optimum_height), int((width - optimum_width) /2):int((width - optimum_width) / 2 + optimum_width)]
+
+
+
+
 
 def convert_from_image_to_numpy_notation(size_tuple):
     size = list(size_tuple)

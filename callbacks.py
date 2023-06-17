@@ -67,3 +67,44 @@ def generate_callbacks(save_path):
     ))
 
     return callbacks
+
+
+
+
+class AverageMAEClassification(tf.keras.callbacks.Callback):
+    def __init__(self, log_dir):
+        self.average_mae_summary = tf.summary.create_file_writer(log_dir)
+        super().__init__()
+
+    def on_epoch_end(self, epoch, logs={}):
+        logs["classification_mae"] = (logs["out_1_classification_mae"] + logs["out_2_classification_mae"]) / 2
+        logs["val_classification_mae"] = (logs["val_out_1_classification_mae"] + logs["val_out_2_classification_mae"]) / 2
+
+        with self.average_mae_summary.as_default():
+            tf.summary.scalar("classification_mae", logs["classification_mae"], step=epoch + 1)
+            tf.summary.scalar("val_classification_mae", logs["val_classification_mae"], step=epoch + 1)
+        
+
+class AverageMSEClassification(tf.keras.callbacks.Callback):
+    def __init__(self, log_dir):
+        self.average_mse_summary = tf.summary.create_file_writer(log_dir)
+        super().__init__()
+
+    def on_epoch_end(self, epoch, logs={}):
+        logs["classification_mse"] = (logs["out_1_classification_mse"] + logs["out_1_classification_mse"]) / 2
+        logs["val_classification_mse"] = (logs["val_out_1_classification_mse"] + logs["val_out_2_classification_mse"]) / 2
+
+        with self.average_mse_summary.as_default():
+            tf.summary.scalar("classification_mse", logs["classification_mse"], step=epoch + 1)
+            tf.summary.scalar("val_classification_mse", logs["val_classification_mse"], step=epoch + 1)
+
+def generate_callbacks_classification(save_path):
+    callbacks = generate_callbacks(save_path)
+
+    log_dir = generate_log_dir_of_not_exists(save_path)
+
+    callbacks.append(AverageMAEClassification(log_dir))
+    callbacks.append(AverageMSEClassification(log_dir))
+
+    return callbacks
+    

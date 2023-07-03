@@ -15,6 +15,9 @@ NOISE_DEVIATION = 20
 MAX_DEGREE_OF_LEFT_RIGHT_ROTATION = 30
 MAX_BRIGHTNESS_AUGM_COEFICIENT = 0.2 #0 is unchanged, 1.2 is up to 20% more or less brightness
 
+#PREPROCESSING INFERENCE CONFIG
+RESIZE_TO_TRAINING_SIZE = True
+
 #ML CONFIG
 EPOCHS = 300
 EARLY_STOPPING_PATIENTE_IN_EPOCHS = 81
@@ -30,7 +33,7 @@ PREDICTION_BATCH_SIZE = 1
     #Use this if you want to use your computer for something else
     #and performance of the pc is hindered by training
     #Fragmentation of memory will be higher
-LIMIT_GPU_MEMORY_GROWTH = True
+#LIMIT_GPU_MEMORY_GROWTH = True
     #Use this if you want to have lower floating point precission(has almost no effect on loss),
     #but use less memory 
     #and compute faster for graphics cards with compute capability above 7
@@ -50,4 +53,4 @@ TRAINING_IMAGE_SAME_SAMPLE_TO_LOG = 3
 VALIDATION_IMAGE_SAMPLES_TO_LOG = 3
 
 #MODEL SAVE CONFIG
-SAVE_LAST_X_EPOCHS = 3
+SAVE_LAST_X_EPOCHS = 300

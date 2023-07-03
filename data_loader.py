@@ -5,7 +5,7 @@ import numpy as np
 import cv2
 from multiprocessing import Pool
 
-from config import INPUT_SIZE, GROUND_TRUTH_SIZE, NR_OF_PROCESSES, INTERPOLATION_RESIZE
+from config import INPUT_SIZE, GROUND_TRUTH_SIZE, NR_OF_PROCESSES, INTERPOLATION_RESIZE, RESIZE_TO_TRAINING_SIZE
 from exeptions import GroundTruthSizeError
 from util import GROUND_TRUTH_SIZE_NUMPY
 
@@ -109,7 +109,10 @@ class PredictionsGenerator(keras.utils.Sequence):
     def __getitem__(self, iteration_n):
         filepaths = self.sample_paths[self.batch_size * iteration_n : self.batch_size * (iteration_n + 1)]
         
-        images = np.array(self.pool.map(read_grayscale_channel_resized, filepaths))
+        if RESIZE_TO_TRAINING_SIZE:
+            images = np.array(self.pool.map(read_grayscale_channel_resized, filepaths))
+        else:
+            images = np.array(self.pool.map(read_grayscale_channel_resized_to_fit_network, filepaths))
 
         if self.preprocessing_procedure is None:
             return images

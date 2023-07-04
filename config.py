@@ -33,7 +33,7 @@ PREDICTION_BATCH_SIZE = 1
     #Use this if you want to use your computer for something else
     #and performance of the pc is hindered by training
     #Fragmentation of memory will be higher
-#LIMIT_GPU_MEMORY_GROWTH = True
+LIMIT_GPU_MEMORY_GROWTH = True
     #Use this if you want to have lower floating point precission(has almost no effect on loss),
     #but use less memory 
     #and compute faster for graphics cards with compute capability above 7

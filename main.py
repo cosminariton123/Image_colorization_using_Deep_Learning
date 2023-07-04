@@ -4,7 +4,7 @@ from tqdm import tqdm
 from multiprocessing import Process
 
 from keras import mixed_precision
-#from limit_gpu_memory_growth import limit_gpu_memory_growth
+from limit_gpu_memory_growth import limit_gpu_memory_growth
 
 from model_generator import make_model
 from tunning import train_model_and_save, train_model_and_save_classification
@@ -82,7 +82,7 @@ def load_and_train_model(model_path):
 
 def main():
 
-    #if LIMIT_GPU_MEMORY_GROWTH is True: limit_gpu_memory_growth()
+    if LIMIT_GPU_MEMORY_GROWTH is True: limit_gpu_memory_growth()
     
     if MIXED_PRECISION_16 is True: mixed_precision.set_global_policy('mixed_float16')
 

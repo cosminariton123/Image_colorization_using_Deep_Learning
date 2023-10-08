@@ -1,4 +1,6 @@
-Adding color to grayscale landscape using AI
+# Adding color to grayscale landscape using AI
+
+## V1:
 
 ![7001 before colorization](https://i.imgur.com/964fRuk.jpeg) --> ![7001 after colorization](https://i.imgur.com/w1NSy6z.jpeg)
 
@@ -9,3 +11,7 @@ Adding color to grayscale landscape using AI
 ![7014 before colorization](https://i.imgur.com/Z1ZRIeu.jpeg) --> ![7014 after colorization](https://i.imgur.com/9QNofXO.jpeg)
 
 ![7057 before colorization](https://i.imgur.com/7kgPXjV.jpeg) --> ![7057 after colorization](https://i.imgur.com/9oSeXMA.jpeg)
+
+## V2:
+
+![Version_two](https://i.imgur.com/SBGhqpX.jpg)
